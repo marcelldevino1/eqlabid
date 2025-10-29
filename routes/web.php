@@ -49,12 +49,18 @@ Route::get('/daftar', [PendaftaranController::class, 'index'])->name('publik.daf
 // Route untuk menyimpan data pendaftaran
 Route::post('/daftar', [PendaftaranController::class, 'store'])->name('publik.pendaftaran.store');
 
-Route::prefix('prestasi')->group(function () {
-    // daftar semua prestasi publik
-    Route::get('/', [PrestasiController::class, 'publikIndex'])->name('publik.prestasi.index');
-    // detail prestasi publik
-    Route::get('/{prestasi:slug}', [PrestasiController::class, 'show'])->name('publik.prestasi.show');
-});
+// Route::prefix('prestasi')->group(function () {
+//     // daftar semua prestasi publik
+//     Route::get('/', [PrestasiController::class, 'publikIndex'])->name('publik.prestasi.index');
+//     // detail prestasi publik
+//     Route::get('/{prestasi:slug}', [PrestasiController::class, 'show'])->name('publik.prestasi.show');
+// });
+
+Route::get('/storage/{path}', function ($path) {
+    $full = storage_path('app/public/' . $path);
+    abort_unless(file_exists($full), 404);
+    return response()->file($full);
+})->where('path', '.*');
 
 
 /*
@@ -94,11 +100,9 @@ Route::prefix('berita-static')->group(function () {
     Route::view('/3', 'publik.berita.show-3')->name('berita.show3');
 });
 
-// Prestasi Publik
-Route::prefix('prestasi-static')->group(function () {
-    Route::view('/1', 'publik.prestasi.show-1')->name('prestasi.show1');
-    Route::view('/2', 'publik.prestasi.show-2')->name('prestasi.show2');
-    Route::view('/3', 'publik.prestasi.show-3')->name('prestasi.show3');
+Route::prefix('prestasi')->group(function () {
+    Route::get('/', [PrestasiController::class, 'publikIndex'])->name('publik.prestasi.index');
+    Route::get('/{id}', [PrestasiController::class, 'show'])->name('publik.prestasi.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -118,18 +122,30 @@ Route::middleware('auth')->group(function () {
     Route::put('kelas/{kelas}/toggle-status', [KelasController::class, 'toggleStatus'])->name('kelas.toggle-status');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->group(function () {
-        // Blok Admin yang SUDAH ADA
-        Route::resource('prestasi', PrestasiController::class);
+        // Prestasi by ID (resource standar)
+        Route::resource('prestasi', PrestasiController::class)->except(['show']);
+        Route::get('prestasi/{id}', [PrestasiController::class, 'showAdmin'])->name('admin.prestasi.show');
 
-        // Tambahkan Berita di sini agar URL-nya menjadi /admin/berita/create
+        // 👉 aktifkan kembali berita resource admin
         Route::resource('berita', BeritaController::class)->parameters([
             'berita' => 'berita',
         ]);
     });
 });
 
+// Route::middleware(['auth'])->group(function () {
+//     Route::prefix('admin')->group(function () {
+//         // Prestasi by ID (resource standar)
+//         Route::resource('prestasi', PrestasiController::class);
+
+//         // Berita by ID/slug (biarkan seperti sekarang)
+//         Route::resource('berita', BeritaController::class)->parameters([
+//             'berita' => 'berita',
+//         ]);
+//     });
+// });
 
 Route::middleware('auth')->group(function () {
 

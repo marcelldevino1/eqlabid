@@ -23,8 +23,8 @@ class PublikController extends Controller
 
     public function about()
 {
-    $prestasis = \App\Models\Prestasi::latest()->take(6)->get();
-    $beritas = \App\Models\Berita::latest()->take(6)->get();
+    // $prestasis = \App\Models\Prestasi::latest()->take(6)->get();
+    // $beritas = \App\Models\Berita::latest()->take(6)->get();
 
     return view('publik.about.aboutDetails', compact('prestasis', 'beritas'));
 }

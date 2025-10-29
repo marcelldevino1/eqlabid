@@ -67,9 +67,9 @@
             <td class="px-4 py-2 align-top">
               @if($prestasi->foto)
                 <button type="button" class="group"
-                        data-preview="{{ asset('storage/'.$prestasi->foto) }}"
+                        data-preview="{{ $prestasi->foto_url }}"
                         onclick="openPreview(this)">
-                  <img src="{{ asset('storage/'.$prestasi->foto) }}"
+                  <img src="{{ $prestasi->foto_url }}"
                        alt="Foto {{ $prestasi->nama }}"
                        class="object-cover w-12 h-12 transition rounded shadow-sm group-hover:scale-105"/>
                 </button>

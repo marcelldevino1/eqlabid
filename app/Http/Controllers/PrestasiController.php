@@ -65,7 +65,7 @@ class PrestasiController extends Controller
 
         if ($request->hasFile('foto')) {
             if ($prestasi->foto) {
-                Storage::disk('public')->delete('$prestasi->foto');
+                Storage::disk('public')->delete($prestasi->foto);
             }
             $data['foto'] = $request->file('foto')->store('prestasi', 'public');
         }
@@ -91,4 +91,10 @@ class PrestasiController extends Controller
         return view('publik.prestasi.show', compact('prestasi'));
     }
 
+    // Tambahkan ini khusus admin
+    public function showAdmin($id)
+    {
+        $prestasi = Prestasi::findOrFail($id);
+        return view('prestasi.show', compact('prestasi'));
+    }
 }
