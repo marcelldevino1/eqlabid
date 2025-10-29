@@ -4,6 +4,9 @@
     </IfModule>
 
     RewriteEngine On
+    
+    # Allow access to storage files
+    RewriteRule ^storage/(.*)$ - [L]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
