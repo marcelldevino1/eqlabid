@@ -24,7 +24,6 @@
     <div class="flex items-center justify-between max-w-6xl px-6 py-4 mx-auto">
       <a href="/" class="flex items-center space-x-2">
         <img src="{{ asset('images/icons/logo.svg') }}" alt="Logo" class="w-auto h-9">
-        <span class="font-semibold text-[#0C3C6C]">EQLAB.id</span>
       </a>
     </div>
   </header>
