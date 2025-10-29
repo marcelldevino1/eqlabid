@@ -114,172 +114,26 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuBtn = document.getElementById("menu-btn");
-            const menu = document.getElementById("menu");
-            const desktopNavLinks = document.querySelectorAll("#nav-links a.nav-item");
-            const mobileNavLinks = document.querySelectorAll("#menu a.mobile-nav-item");
-            let menuOpen = false;
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const anim = el.dataset.anim;
+          const delay = el.dataset.delay || 0;
+          el.classList.add(`animate-${anim}`);
+          if (delay) el.style.animationDelay = `${delay}ms`;
+          observer.unobserve(el);
+        }
+      });
+    },
+    { threshold: 0.15 } // muncul 15% dari tinggi elemen
+  );
 
-            // --- Toggle Menu Mobile ---
-            menuBtn.addEventListener("click", () => {
-                menu.classList.toggle("hidden");
-                menuOpen = !menuOpen;
-
-                const spans = menuBtn.querySelectorAll("span");
-                if (menuOpen) {
-                    spans[0].classList.add("rotate-45", "translate-y-[10px]");
-                    spans[1].classList.add("opacity-0");
-                    spans[2].classList.add("-rotate-45", "-translate-y-[10px]");
-                } else {
-                    spans.forEach(s => s.classList.remove("rotate-45", "translate-y-[10px]", "opacity-0", "-rotate-45", "-translate-y-[10px]"));
-                }
-            });
-
-            // --- Tutup menu kalau klik di luar ---
-            document.addEventListener("click", (e) => {
-                if (menuOpen && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
-                    menu.classList.add("hidden");
-                    menuOpen = false;
-                    const spans = menuBtn.querySelectorAll("span");
-                    spans.forEach(s => s.classList.remove("rotate-45", "translate-y-[10px]", "opacity-0", "-rotate-45", "-translate-y-[10px]"));
-                }
-            });
-
-            // --- Tambah efek hover + garis bawah animasi ---
-            desktopNavLinks.forEach(link => {
-                const underline = document.createElement("span");
-                underline.classList.add(
-                    "nav-underline",
-                    "absolute",
-                    "bottom-0",
-                    "left-0",
-                    "h-[2px]",
-                    "bg-[#0C3C6C]",
-                    "transition-all",
-                    "duration-300"
-                );
-                underline.style.width = "0";
-                underline.style.transformOrigin = "left";
-                link.classList.add("relative", "pb-1", "transition", "text-gray-700", "hover:text-[#0C3C6C]");
-                link.appendChild(underline);
-
-                link.addEventListener("mouseenter", () => {
-                    underline.style.width = "100%";
-                    underline.style.transformOrigin = "left"; // muncul dari kiri
-                });
-
-                link.addEventListener("mouseleave", () => {
-                    underline.style.width = "0";
-                    underline.style.transformOrigin = "right"; // hilang ke kanan
-                });
-
-                // --- Klik efek aktif sementara ---
-                link.addEventListener("click", () => {
-                    link.classList.remove("text-gray-700");
-                    link.classList.add("text-[#0C3C6C]", "font-semibold");
-                    underline.style.width = "100%";
-                    underline.style.transformOrigin = "left";
-
-                    // Setelah 2 detik, kembali ke semula (abu-abu & garis hilang dari kanan)
-                    setTimeout(() => {
-                        link.classList.remove("text-[#0C3C6C]", "font-semibold");
-                        link.classList.add("text-gray-700");
-                        underline.style.transformOrigin = "right";
-                        underline.style.width = "0";
-                    }, 2000);
-                });
-            });
-
-            // --- Tutup menu mobile pas klik ---
-            [...mobileNavLinks].forEach(link => {
-                link.addEventListener("click", () => {
-                    if (window.innerWidth < 768 && menuOpen) {
-                        menu.classList.add("hidden");
-                        menuOpen = false;
-                        menuBtn.querySelectorAll("span").forEach(s =>
-                            s.classList.remove("rotate-45", "translate-y-[10px]", "opacity-0", "-rotate-45", "-translate-y-[10px]")
-                        );
-                    }
-                });
-            });
-            // Auto animate on scroll (once)
-            (() => {
-                const els = document.querySelectorAll('[data-anim]');
-                if (!('IntersectionObserver' in window) || !els.length) return;
-
-                const io = new IntersectionObserver((entries) => {
-                    for (const e of entries) {
-                        if (!e.isIntersecting) continue;
-                        const el = e.target;
-                        const anims = (el.dataset.anim || '').split(/\s+/).filter(Boolean);
-                        const delay = el.dataset.delay ? Number(el.dataset.delay) / 1000 + 's' : null;
-
-                        if (delay) el.style.animationDelay = delay;
-                        anims.forEach(a => el.classList.add(`animate-${a}`)); // gunakan utilities dari config kamu
-                        el.classList.add('will-change-transform');
-                        el.style.opacity = ''; // kalau sempat diset 0 di CSS
-
-                        io.unobserve(el); // hanya sekali
-                    }
-                }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
-
-                els.forEach(el => io.observe(el));
-            })();
-
-            // Group anim: barengan di ≥sm, stagger di HP
-            (function () {
-                const group = document.querySelector('[data-anim-group="about-cards"]');
-                if (!group) return;
-
-                const cards = [...group.querySelectorAll('[data-anim]')];
-                if (!cards.length) return;
-
-                const isDesktop = () => window.matchMedia('(min-width: 640px)').matches; // sm breakpoint
-
-                // observer untuk memulai anim saat grid terlihat
-                const io = new IntersectionObserver((entries) => {
-                    const entry = entries[0];
-                    if (!entry || !entry.isIntersecting) return;
-
-                    if (isDesktop()) {
-                        // BARANGAN: semua kartu anim "rise" dengan delay sama
-                        const delay = '0.28s';
-                        cards.forEach(el => {
-                            el.style.animationDelay = delay;
-                            el.classList.add('will-change-transform', 'animate-rise');
-                            el.style.opacity = '';
-                        });
-                    } else {
-                        // STAGGER HP: 80ms per kartu
-                        const base = 0.28; // detik
-                        const step = 0.08; // 80ms
-                        cards.forEach((el, i) => {
-                            el.style.animationDelay = (base + i * step) + 's';
-                            el.classList.add('will-change-transform', 'animate-rise');
-                            el.style.opacity = '';
-                        });
-                    }
-
-                    io.unobserve(group); // sekali saja
-                }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
-
-                io.observe(group);
-
-                // responsif: kalau user resize signifikan dan grid masih di viewport
-                let resizeTO;
-                window.addEventListener('resize', () => {
-                    clearTimeout(resizeTO);
-                    resizeTO = setTimeout(() => {
-                        // jika sudah pernah anim, tidak kita ulang (supaya hemat)
-                        // Kalau mau re-trigger saat resize, hapus early return di bawah & reset class.
-                        // if (cards[0].classList.contains('animate-rise')) return;
-                    }, 180);
-                });
-            })();
-        });
-    </script>
-
+  document.querySelectorAll("[data-anim]").forEach((el) => observer.observe(el));
+});
+</script>
 
 </body>
 

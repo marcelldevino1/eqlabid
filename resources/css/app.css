@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global behavior */
+/* Global scroll behavior */
 html { scroll-behavior: smooth; }
 
 /* Delay utilities & reduced-motion guard */
@@ -17,8 +17,23 @@ html { scroll-behavior: smooth; }
   .animate-delay-1000 { animation-delay: 1s }
   .animate-delay-1200 { animation-delay: 1.2s }
 
+  /* Smooth transform & GPU hint */
+[data-anim] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 1s ease;
+  will-change: opacity, transform;
+}
+
+[data-anim].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
   @media (prefers-reduced-motion: reduce) {
-    .animate-fade, .animate-rise, .animate-pop, .animate-float-slow, .animate-cta-glow {
+    .animate-fade, .animate-rise, .animate-pop, 
+    .animate-float-slow, .animate-cta-glow {
       animation: none !important;
     }
   }
