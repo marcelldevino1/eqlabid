@@ -13,7 +13,7 @@
     <link href="https://fonts.bunny.net/css?family=poppins:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    <link rel="stylesheet" href=" http://eqlabid.jh-beon.cloud/build/assets/app-mnQoiJVb.css ">
+    <!-- <link rel="stylesheet" href=" http://eqlabid.jh-beon.cloud/build/assets/app-mnQoiJVb.css "> -->
     @vite('resources/css/app.css')
     <script src="http://eqlabid.jh-beon.cloud/build/assets/app-CXDpL9bK.js"></script>">
 </head>

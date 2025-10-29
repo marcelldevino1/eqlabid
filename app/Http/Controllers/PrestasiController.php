@@ -30,17 +30,15 @@ class PrestasiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:100',
             'prestasi' => 'required|string|max:255',
             'deskripsi' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
-
-        $data = $request->all();
-
         if ($request->hasFile('foto')) {
+            // Simpan ke storage/app/public/prestasi/...
             $data['foto'] = $request->file('foto')->store('prestasi', 'public');
         }
 
@@ -56,19 +54,18 @@ class PrestasiController extends Controller
 
     public function update(Request $request, Prestasi $prestasi)
     {
-        $request->validate([
+        $data = $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:100',
             'prestasi' => 'required|string|max:255',
             'deskripsi' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        $data = $request->all();
 
         if ($request->hasFile('foto')) {
             if ($prestasi->foto) {
-                Storage::disk('public')->delete($prestasi->foto);
+                Storage::disk('public')->delete('$prestasi->foto');
             }
             $data['foto'] = $request->file('foto')->store('prestasi', 'public');
         }
@@ -88,8 +85,9 @@ class PrestasiController extends Controller
 
         return redirect()->route('prestasi.index')->with('success', 'Prestasi berhasil dihapus!');
     }
-    public function show(Prestasi $prestasi)
+    public function show($id)
     {
+        $prestasi = Prestasi::findOrFail($id);
         return view('publik.prestasi.show', compact('prestasi'));
     }
 

@@ -1,63 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* Tambahkan CSS ini ke app.css Anda */
 
-html {
-    scroll-behavior: smooth; /* Smooth scroll untuk semua anchor */
-}
+/* Global behavior */
+html { scroll-behavior: smooth; }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-        /* Sedikit naik untuk efek yang lebih halus */
+/* Delay utilities & reduced-motion guard */
+@layer utilities {
+  .animate-delay-100 { animation-delay: .1s }
+  .animate-delay-200 { animation-delay: .2s }
+  .animate-delay-300 { animation-delay: .3s }
+  .animate-delay-400 { animation-delay: .4s }
+  .animate-delay-500 { animation-delay: .5s }
+  .animate-delay-600 { animation-delay: .6s }
+  .animate-delay-800 { animation-delay: .8s }
+  .animate-delay-1000 { animation-delay: 1s }
+  .animate-delay-1200 { animation-delay: 1.2s }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade, .animate-rise, .animate-pop, .animate-float-slow, .animate-cta-glow {
+      animation: none !important;
     }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Animasi untuk Teks Utama dengan penundaan */
-.animate-fade-in-1 {
-    animation: fadeIn 0.8s ease-out 0.2s forwards;
-    /* 0.2s delay */
-}
-
-.animate-fade-in-2 {
-    animation: fadeIn 0.8s ease-out 0.4s forwards;
-    /* 0.4s delay */
-}
-
-.animate-fade-in-3 {
-    animation: fadeIn 0.8s ease-out 0.6s forwards;
-    /* 0.6s delay */
-}
-
-/* Penundaan (Delay) untuk Kartu */
-.delay-400 {
-    animation-delay: 0.8s;
-}
-
-.delay-600 {
-    animation-delay: 1.0s;
-}
-
-.delay-800 {
-    animation-delay: 1.2s;
-}
-
-.delay-1000 {
-    animation-delay: 1.4s;
-}
-
-.delay-1200 {
-    animation-delay: 1.6s;
-}
-
-/* Pastikan kartu mulai tidak terlihat */
-.opacity-0 {
-    opacity: 0;
+  }
 }

@@ -7,7 +7,6 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/icons/logo-white.svg') }}">
     <title>EQLAB.id</title>
     @vite('resources/css/app.css')
-    <script src="http://eqlabid.jh-beon.cloud/build/assets/app-CXDpL9bK.js"></script>">
     <style>
         /* Efek garis bawah dan warna aktif pas diklik */
         .active-link {
@@ -108,6 +107,7 @@
             </div>
         </div>
     </nav>
+    tetsing
 
     <main class="overflow-hidden bg-white">
         @yield('content')
@@ -203,6 +203,80 @@
                     }
                 });
             });
+            // Auto animate on scroll (once)
+            (() => {
+                const els = document.querySelectorAll('[data-anim]');
+                if (!('IntersectionObserver' in window) || !els.length) return;
+
+                const io = new IntersectionObserver((entries) => {
+                    for (const e of entries) {
+                        if (!e.isIntersecting) continue;
+                        const el = e.target;
+                        const anims = (el.dataset.anim || '').split(/\s+/).filter(Boolean);
+                        const delay = el.dataset.delay ? Number(el.dataset.delay) / 1000 + 's' : null;
+
+                        if (delay) el.style.animationDelay = delay;
+                        anims.forEach(a => el.classList.add(`animate-${a}`)); // gunakan utilities dari config kamu
+                        el.classList.add('will-change-transform');
+                        el.style.opacity = ''; // kalau sempat diset 0 di CSS
+
+                        io.unobserve(el); // hanya sekali
+                    }
+                }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+                els.forEach(el => io.observe(el));
+            })();
+
+            // Group anim: barengan di ≥sm, stagger di HP
+            (function () {
+                const group = document.querySelector('[data-anim-group="about-cards"]');
+                if (!group) return;
+
+                const cards = [...group.querySelectorAll('[data-anim]')];
+                if (!cards.length) return;
+
+                const isDesktop = () => window.matchMedia('(min-width: 640px)').matches; // sm breakpoint
+
+                // observer untuk memulai anim saat grid terlihat
+                const io = new IntersectionObserver((entries) => {
+                    const entry = entries[0];
+                    if (!entry || !entry.isIntersecting) return;
+
+                    if (isDesktop()) {
+                        // BARANGAN: semua kartu anim "rise" dengan delay sama
+                        const delay = '0.28s';
+                        cards.forEach(el => {
+                            el.style.animationDelay = delay;
+                            el.classList.add('will-change-transform', 'animate-rise');
+                            el.style.opacity = '';
+                        });
+                    } else {
+                        // STAGGER HP: 80ms per kartu
+                        const base = 0.28; // detik
+                        const step = 0.08; // 80ms
+                        cards.forEach((el, i) => {
+                            el.style.animationDelay = (base + i * step) + 's';
+                            el.classList.add('will-change-transform', 'animate-rise');
+                            el.style.opacity = '';
+                        });
+                    }
+
+                    io.unobserve(group); // sekali saja
+                }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+
+                io.observe(group);
+
+                // responsif: kalau user resize signifikan dan grid masih di viewport
+                let resizeTO;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTO);
+                    resizeTO = setTimeout(() => {
+                        // jika sudah pernah anim, tidak kita ulang (supaya hemat)
+                        // Kalau mau re-trigger saat resize, hapus early return di bawah & reset class.
+                        // if (cards[0].classList.contains('animate-rise')) return;
+                    }, 180);
+                });
+            })();
         });
     </script>
 

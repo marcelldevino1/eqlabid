@@ -1,39 +1,39 @@
+# OS & Log Files
 *.log
 .DS_Store
+Thumbs.db
+
+# Environment Files
 .env
 .env.backup
 .env.production
+
+# PHP & IDE Cache
 .phpactor.json
 .phpunit.result.cache
+/.phpunit.cache
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
-/auth.json
+
+# Node & Composer Dependencies
 /node_modules
+/vendor
+
+# Laravel Specific
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
 Homestead.json
 Homestead.yaml
-Thumbs.db
-vendor
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-.env
-.phpunit.result.cache
-Homestead.yaml
-Homestead.json
-.idea
-.vscode
+
+# Misc
 npm-debug.log
 yarn-error.log
+
+# Optional (if you don’t want to push tests)
 /tests
-/.git

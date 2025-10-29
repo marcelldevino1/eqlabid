@@ -16,8 +16,8 @@ class Prestasi extends Model
         'deskripsi',
         'foto',
     ];
-        public function getRouteKeyName()
-    {
-        return 'slug';
-    }
+    //     public function getRouteKeyName()
+    // {
+    //     return 'slug';
+    // }
 }
